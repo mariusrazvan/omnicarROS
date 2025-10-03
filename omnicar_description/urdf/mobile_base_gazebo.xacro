@@ -1,0 +1,33 @@
+<?xml version = "1.0" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <gazebo>
+        <plugin 
+            filename="gz-sim-mecanum-drive-system"
+            name="gz::sim::systems::MecanumDrive">
+            <front_left_joint>base_front_left</front_left_joint>
+            <front_right_joint>base_front_right</front_right_joint>
+            <back_left_joint>base_rear_left</back_left_joint>
+            <back_right_joint>base_rear_right</back_right_joint>
+            <wheel_radius>0.04</wheel_radius>
+            <wheel_separation>0.165</wheel_separation>
+            <wheelbase>0.22</wheelbase>
+            <topic>/model/omnicar/cmd_vel</topic>
+            <odom_topic>/model/omnicar/odometry</odom_topic>
+            <tf_topic>/model/omnicar/tf</tf_topic>
+            <frame_id>odom</frame_id>
+            <child_frame_id>base_footprint</child_frame_id>
+        </plugin>
+
+    </gazebo>
+
+    <gazebo>
+        <plugin 
+            filename="gz-sim-joint-state-publisher-system"
+            name="gz::sim::systems::JointStatePublisher">
+            <joint_name>base_front_left</joint_name>
+            <joint_name>base_front_right</joint_name>
+            <joint_name>base_rear_left</joint_name>
+            <joint_name>base_rear_right</joint_name>
+        </plugin>
+    </gazebo>
+</robot>
