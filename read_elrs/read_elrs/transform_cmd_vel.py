@@ -59,9 +59,6 @@ class TransformCmdVelNode(Node):
         global LJHorizontal
         global RJHorizontal
 
-        global wheel_radius
-        global motor_rpm_max
-
         cmd_vel = Twist()
 
         remote_x_to_rpm = self.map_range(LJVertical)    # maps to the motor rpm range
