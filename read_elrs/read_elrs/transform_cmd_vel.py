@@ -4,7 +4,7 @@ from rclpy.node import Node
 from example_interfaces.msg import Int16
 from geometry_msgs.msg import Twist
 import math
-import CONSTANTS
+import read_elrs.CONSTANTS as CONSTANTS
 
 
 LJVertical = 0
@@ -65,13 +65,13 @@ class TransformCmdVelNode(Node):
         remote_y_to_rpm = self.map_range(LJHorizontal)
         remote_z_to_rpm = self.map_range(RJHorizontal)
 
-        if abs(remote_x_to_rpm) < 5.0:
+        if abs(remote_x_to_rpm) < 10.0:
             remote_x_to_rpm = 0.0
 
-        if abs(remote_y_to_rpm) < 5.0:
+        if abs(remote_y_to_rpm) < 10.0:
             remote_y_to_rpm = 0.0
 
-        if abs(remote_z_to_rpm) < 5.0:
+        if abs(remote_z_to_rpm) < 10.0:
             remote_z_to_rpm = 0.0
 
         linear_x = self.get_meters_per_second(remote_x_to_rpm, CONSTANTS.wheel_radius) # in m/s

@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist
 from read_elrs.Emakefun_MotorHAT import Emakefun_MotorHAT
 from example_interfaces.msg import Bool
 from math import atan2, sqrt, sin, cos, pi as PI
-import CONSTANTS
+import read_elrs.CONSTANTS as CONSTANTS
 
 cmd_vel = Twist()
 
@@ -76,13 +76,12 @@ class RunMotorsNode(Node):
 
         #TODO handle emergency stops with a break first!
 
-        # Extract joystick values
-        x = cmd_vel.linear.x   # Forward/Backward in m/s
-        y = cmd_vel.linear.y   # Left/Right in m/s
+        # Extract cmd_vel values
 
-        r = cmd_vel.angular.z  # Rotation in rad/s
+        x = self.map_range_linear(cmd_vel.linear.x)   # Forward/Backward from m/s
+        y = self.map_range_linear(cmd_vel.linear.y)   # Left/Right from m/s
 
-        #TODO change this for m/s and rad/s
+        r = self.map_range_angular(cmd_vel.angular.z)  # Rotation from rad/s
 
         angle = atan2(y, x) if (x != 0 or y != 0) else 0
         power = sqrt(x**2 + y**2)
@@ -93,15 +92,6 @@ class RunMotorsNode(Node):
         wheelFR = power * cos(angle + (PI / 4)) - rotation
         wheelBL = power * cos(angle + (PI / 4)) + rotation
         wheelBR = power * sin(angle + (PI / 4)) - rotation
-
-        # Normalize wheel speeds to be within -255 to 255
-        max_wheel_speed = max(abs(wheelFL), abs(wheelFR), abs(wheelBL), abs(wheelBR), 255)
-        
-        wheelFL = (wheelFL / max_wheel_speed) * 255
-        wheelFR = (wheelFR / max_wheel_speed) * 255
-        wheelBL = (wheelBL / max_wheel_speed) * 255
-        wheelBR = (wheelBR / max_wheel_speed) * 255
-
 
         if wheelFL > 0:
             frontLeftMotor.run(Emakefun_MotorHAT.FORWARD)
@@ -152,6 +142,31 @@ class RunMotorsNode(Node):
         frontRightMotor.run(Emakefun_MotorHAT.RELEASE)
         rearLeftMotor.run(Emakefun_MotorHAT.RELEASE)
         rearRightMotor.run(Emakefun_MotorHAT.RELEASE)
+
+    # change from m/s to motor speed range -255 to 255
+    def map_range_linear(self, value, old_min=-CONSTANTS.max_linear_velocity, old_max=CONSTANTS.max_linear_velocity, new_min=-255, new_max=255):
+
+        if old_min <= value and value <= old_max:
+
+            scaled = (value - old_min) / (old_max - old_min)
+            mapped_value = scaled * (new_max - new_min) + new_min
+
+        else:
+            mapped_value = 0.0
+
+        return mapped_value
+    
+    def map_range_angular(self, value, old_min=-CONSTANTS.max_angular_velocity, old_max=CONSTANTS.max_angular_velocity, new_min=-255, new_max=255):
+
+        if old_min <= value and value <= old_max:
+
+            scaled = (value - old_min) / (old_max - old_min)
+            mapped_value = scaled * (new_max - new_min) + new_min
+
+        else:
+            mapped_value = 0.0
+
+        return mapped_value
 
 
 def main(args=None):
