@@ -9,3 +9,4 @@ max_linear_velocity = (motor_rpm_max / 60) * 2 * math.pi * wheel_radius # in m/s
 max_angular_velocity = (motor_rpm_max / 60) * 2 * math.pi # in rad/s
 
 tof_frame_id = "range_finder"
+imu_frame_id = "imu_link"

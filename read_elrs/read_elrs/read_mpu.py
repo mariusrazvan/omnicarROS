@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Header
 from sensor_msgs.msg import Imu
 import mpu6050
 import math
+import read_elrs.CONSTANTS as CONSTANTS
 import numpy as np
 from scipy.spatial.transform import Rotation
 
@@ -27,10 +27,10 @@ class ReadMPUNode(Node):
 
     def calculate_orientation(self, accel_data, gyro_data, dt):
         """Calculate orientation quaternion using complementary filter"""
+
         # Convert accelerometer data to angles
         roll = math.atan2(accel_data['y'], accel_data['z'])
-        pitch = math.atan2(-accel_data['x'],
-                          math.sqrt(accel_data['y']**2 + accel_data['z']**2))
+        pitch = math.atan2(-accel_data['x'], math.sqrt(accel_data['y']**2 + accel_data['z']**2))
 
         # Create rotation object from Euler angles
         accel_rotation = Rotation.from_euler('xyz', [roll, pitch, 0])
@@ -42,6 +42,7 @@ class ReadMPUNode(Node):
             gyro_data['y'] * dt,
             gyro_data['z'] * dt
         ])
+        
         current_rotation = Rotation.from_quat(self.current_orientation)
         gyro_updated = (current_rotation * gyro_rotation).as_quat()
 
@@ -70,8 +71,8 @@ class ReadMPUNode(Node):
 
             # Create Imu message
             msg = Imu()
-            msg.header.stamp = current_time.to_msg()
-            msg.header.frame_id = "imu_link"
+            msg.header.stamp = self.get_clock().now().to_msg()
+            msg.header.frame_id = CONSTANTS.imu_frame_id
 
             # Set orientation (quaternion)
             msg.orientation.x = float(orientation[0])

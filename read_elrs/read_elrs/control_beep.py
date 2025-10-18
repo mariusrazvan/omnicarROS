@@ -7,7 +7,7 @@ import lgpio
 SF_old = 0
 
 BEEPING_PIN = 27  # GPIO27
-FREQ = 440
+FREQ = 1000
 
 h = lgpio.gpiochip_open(0)
 lgpio.gpio_claim_output(h, BEEPING_PIN, 0)
