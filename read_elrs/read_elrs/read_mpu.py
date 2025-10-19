@@ -13,7 +13,7 @@ class ReadMPUNode(Node):
     def __init__(self):
         super().__init__("read_mpu")
 
-        self.get_logger().info("Getting MPU data")
+        self.get_logger().info("Reading MPU node started")
 
         self.mpu = mpu6050.mpu6050(0x68)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg.Range import Range
+from sensor_msgs.msg import Range
 import VL53L0X
 import math
 import read_elrs.CONSTANTS as CONSTANTS

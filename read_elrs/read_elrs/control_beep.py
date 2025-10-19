@@ -39,6 +39,3 @@ def main(args=None):
     rclpy.spin(node)
     lgpio.gpiochip_close(h)
     rclpy.shutdown()
-
-if __name__ == "__main__":
-    main()
